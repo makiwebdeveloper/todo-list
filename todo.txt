@@ -1,0 +1,4 @@
+[ ] - UI
+[ ] - Drag and Drop
+[ ] - Add todo
+[ ] - Delete todo
