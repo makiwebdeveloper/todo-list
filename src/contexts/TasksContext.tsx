@@ -1,4 +1,11 @@
-import { createContext, FC, useContext, useState } from "react";
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { IData, ITask, StatusType } from "../types";
 import { v4 } from "uuid";
 import { DropResult } from "react-beautiful-dnd";
@@ -18,7 +25,11 @@ const TasksContext = createContext<ITasksContext | null>(null);
 export const useTasks = () => useContext(TasksContext) as ITasksContext;
 
 export const TasksProvider: FC = ({ children }) => {
-  const [data, setData] = useState<IData>(fakeData);
+  const [data, setData] = useState<IData>({
+    todo: [],
+    "in progress": [],
+    done: [],
+  });
   const [colorIndex, setColorIndex] = useState(0);
 
   const onDragEnd = (result: DropResult) => {
@@ -98,6 +109,15 @@ export const TasksProvider: FC = ({ children }) => {
     setData(copy);
     setColorIndex((prev) => (prev < colors.length - 1 ? prev + 1 : 0));
   };
+
+  useLayoutEffect(() => {
+    const savedData = localStorage.getItem("tasksData");
+    if (savedData) setData(JSON.parse(savedData));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tasksData", JSON.stringify(data));
+  }, [data]);
 
   const value: ITasksContext = {
     data,
