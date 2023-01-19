@@ -2,6 +2,7 @@ import { FC } from "react";
 import { ITask } from "../types";
 import classNames from "classnames";
 import TaskItem from "./TaskItem";
+import { Droppable } from "react-beautiful-dnd";
 
 interface Props {
   tasks: ITask[];
@@ -23,11 +24,20 @@ const Column: FC<Props> = ({ tasks, columnName }) => {
       <button className="bg-gray-200 w-full rounded-md my-3 font-semibold text-gray-700">
         +
       </button>
-      <div className="flex flex-col gap-3">
-        {tasks.map((task) => (
-          <TaskItem key={task.id} task={task} />
-        ))}
-      </div>
+      <Droppable droppableId={columnName}>
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className="h-[calc(100%-80px)]"
+          >
+            {tasks.map((task, index) => (
+              <TaskItem key={task.id} task={task} index={index} />
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </div>
   );
 };

@@ -3,3 +3,11 @@ export interface ITask {
   title: string;
   color: string;
 }
+
+export type StatusType = "todo" | "in progress" | "done";
+
+export interface IData {
+  todo: ITask[];
+  "in progress": ITask[];
+  done: ITask[];
+}
