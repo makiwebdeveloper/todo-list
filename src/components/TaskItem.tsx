@@ -12,7 +12,7 @@ interface Props {
 }
 
 const TaskItem: FC<Props> = ({ task, index }) => {
-  const { editTitle } = useTasks();
+  const { editTitle, removeTask } = useTasks();
   const [isEdit, setIsEdit] = useState(false);
   const [value, setValue] = useState("");
 
@@ -40,7 +40,7 @@ const TaskItem: FC<Props> = ({ task, index }) => {
                   <AiOutlineEdit />
                 )}
               </button>
-              <button>
+              <button onClick={() => removeTask(task.id)}>
                 <BsTrash />
               </button>
             </div>

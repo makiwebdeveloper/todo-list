@@ -7,6 +7,7 @@ interface ITasksContext {
   data: IData;
   onDragEnd: (result: DropResult) => void;
   editTitle: (newTitle: string, taskId: string) => void;
+  removeTask: (taskId: string) => void;
 }
 
 const TasksContext = createContext<ITasksContext | null>(null);
@@ -63,10 +64,21 @@ export const TasksProvider: FC = ({ children }) => {
     setData(copy);
   };
 
+  const removeTask = (taskId: string) => {
+    const copy = { ...data };
+    for (let i = 0; i < Object.entries(copy).length; i++) {
+      copy[Object.entries(copy)[i][0] as StatusType] = Object.entries(copy)[
+        i
+      ][1].filter((item: ITask) => item.id !== taskId);
+    }
+    setData(copy);
+  };
+
   const value: ITasksContext = {
     data,
     onDragEnd,
     editTitle,
+    removeTask,
   };
 
   return (
