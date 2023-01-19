@@ -1,6 +1,7 @@
 import Column from "./components/Column";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useTasks } from "./contexts/TasksContext";
+import { StatusType } from "./types";
 
 function App() {
   const { data, onDragEnd } = useTasks();
@@ -13,7 +14,7 @@ function App() {
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex gap-5 w-[700px] mx-auto min-h-[calc(100%-60px)]">
           {Object.entries(data).map(([name, items]) => (
-            <Column key={name} columnName={name} tasks={items} />
+            <Column key={name} columnName={name as StatusType} tasks={items} />
           ))}
         </div>
       </DragDropContext>

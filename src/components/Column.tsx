@@ -1,15 +1,18 @@
 import { FC } from "react";
-import { ITask } from "../types";
+import { ITask, StatusType } from "../types";
 import classNames from "classnames";
 import TaskItem from "./TaskItem";
 import { Droppable } from "react-beautiful-dnd";
+import { useTasks } from "../contexts/TasksContext";
 
 interface Props {
   tasks: ITask[];
-  columnName: string;
+  columnName: StatusType;
 }
 
 const Column: FC<Props> = ({ tasks, columnName }) => {
+  const {createTask} = useTasks()
+  
   return (
     <div className="flex-1 bg-gray-100 p-3 rounded-xl">
       <p
@@ -21,7 +24,7 @@ const Column: FC<Props> = ({ tasks, columnName }) => {
       >
         {columnName}
       </p>
-      <button className="bg-gray-200 w-full rounded-md my-3 font-semibold text-gray-700">
+      <button onClick={() => createTask(columnName)} className="bg-gray-200 w-full rounded-md my-3 font-semibold text-gray-700">
         +
       </button>
       <Droppable droppableId={columnName}>

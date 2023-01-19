@@ -2,26 +2,24 @@ import { createContext, FC, useContext, useState } from "react";
 import { IData, ITask, StatusType } from "../types";
 import { v4 } from "uuid";
 import { DropResult } from "react-beautiful-dnd";
+import { colors, fakeData } from "../constants";
 
 interface ITasksContext {
   data: IData;
   onDragEnd: (result: DropResult) => void;
   editTitle: (newTitle: string, taskId: string) => void;
   removeTask: (taskId: string) => void;
+  changeColor: (taskId: string) => void;
+  createTask: (columnName: StatusType) => void;
+  colorIndex: number;
 }
 
 const TasksContext = createContext<ITasksContext | null>(null);
 export const useTasks = () => useContext(TasksContext) as ITasksContext;
 
 export const TasksProvider: FC = ({ children }) => {
-  const [data, setData] = useState<IData>({
-    todo: [
-      { id: v4(), title: "Ecommerce", color: "bg-red-400" },
-      { id: v4(), title: "Pinterest Clone", color: "bg-blue-400" },
-    ],
-    "in progress": [{ id: v4(), title: "Todo List", color: "bg-purple-400" }],
-    done: [],
-  });
+  const [data, setData] = useState<IData>(fakeData);
+  const [colorIndex, setColorIndex] = useState(0);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -74,11 +72,41 @@ export const TasksProvider: FC = ({ children }) => {
     setData(copy);
   };
 
+  const createTask = (columnName: StatusType) => {
+    setData({
+      ...data,
+      [columnName]: [
+        {
+          id: v4(),
+          title: "New Task",
+          color: colors[Math.floor(Math.random() * colors.length)],
+        },
+        ...data[columnName],
+      ],
+    });
+  };
+
+  const changeColor = (taskId: string) => {
+    const copy = { ...data };
+    for (let i = 0; i < Object.entries(copy).length; i++) {
+      copy[Object.entries(copy)[i][0] as StatusType] = Object.entries(copy)[
+        i
+      ][1].map((item: ITask) =>
+        item.id === taskId ? { ...item, color: colors[colorIndex] } : item
+      );
+    }
+    setData(copy);
+    setColorIndex((prev) => (prev < colors.length - 1 ? prev + 1 : 0));
+  };
+
   const value: ITasksContext = {
     data,
     onDragEnd,
     editTitle,
     removeTask,
+    createTask,
+    changeColor,
+    colorIndex,
   };
 
   return (
