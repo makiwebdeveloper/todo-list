@@ -5,7 +5,6 @@ import TextareaAutosize from "react-textarea-autosize";
 import { AiOutlineEdit, AiOutlineCheck } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
 import { useTasks } from "../contexts/TasksContext";
-import { colors } from "../constants";
 
 interface Props {
   task: ITask;
@@ -13,14 +12,14 @@ interface Props {
 }
 
 const TaskItem: FC<Props> = ({ task, index }) => {
-  const { editTitle, removeTask, changeColor, colorIndex } = useTasks();
+  const { editTitle, removeTask, changeColor } = useTasks();
   const [isEdit, setIsEdit] = useState(false);
   const [value, setValue] = useState("");
   const [prevColor, setPrevColor] = useState(task.color);
 
   const saveEditedTitle = () => {
-    if (value.length > 0) {
-      editTitle(value, task.id);
+    if (value.split("<br />").join("").length > 0) {
+      editTitle(value.replace(/(?:\r\n|\r|\n)/g, "<br />"), task.id);
       setValue("");
     } else if (prevColor !== task.color) {
       setPrevColor(task.color);
@@ -38,7 +37,13 @@ const TaskItem: FC<Props> = ({ task, index }) => {
           className={`${task.color} font-semibold rounded-xl p-3 shadow-lg cursor-pointer mb-3`}
         >
           <div className="flex justify-between gap-3 items-start">
-            <p className="break-all">{task.title}</p>
+            <div>
+              {task.title.split("<br />").map((item, i) => (
+                <p key={i} className="break-all">
+                  {item}
+                </p>
+              ))}
+            </div>
             <div className="flex items-center gap-1">
               {isEdit ? (
                 <button onClick={saveEditedTitle}>
@@ -57,6 +62,7 @@ const TaskItem: FC<Props> = ({ task, index }) => {
           {isEdit && (
             <div className="w-full">
               <TextareaAutosize
+                autoFocus
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="Edit title"

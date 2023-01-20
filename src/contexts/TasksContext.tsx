@@ -9,7 +9,7 @@ import {
 import { IData, ITask, StatusType } from "../types";
 import { v4 } from "uuid";
 import { DropResult } from "react-beautiful-dnd";
-import { colors, fakeData } from "../constants";
+import { colors } from "../constants";
 
 interface ITasksContext {
   data: IData;

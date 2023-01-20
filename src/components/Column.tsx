@@ -11,8 +11,8 @@ interface Props {
 }
 
 const Column: FC<Props> = ({ tasks, columnName }) => {
-  const {createTask} = useTasks()
-  
+  const { createTask } = useTasks();
+
   return (
     <div className="flex-1 bg-gray-100 p-3 rounded-xl">
       <p
@@ -24,7 +24,10 @@ const Column: FC<Props> = ({ tasks, columnName }) => {
       >
         {columnName}
       </p>
-      <button onClick={() => createTask(columnName)} className="bg-gray-200 w-full rounded-md my-3 font-semibold text-gray-700">
+      <button
+        onClick={() => createTask(columnName)}
+        className="bg-gray-200 w-full rounded-md my-3 font-semibold text-gray-700"
+      >
         +
       </button>
       <Droppable droppableId={columnName}>
